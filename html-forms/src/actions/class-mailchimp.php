@@ -41,6 +41,12 @@ class MailChimp extends Action {
 		   <span class="hf-action-summary"><?php printf( __( 'Subscribe to %s', 'html-forms' ), $selected_list->name ); ?></span>
 	<?php } ?>
 	   <input type="hidden" name="form[settings][actions][<?php echo $index; ?>][type]" value="<?php echo $this->type; ?>" />
+
+       <p class="description">
+       <?php _e( 'Add an email address to the assigned Mailchimp list when this form is sucessfully submitted.', 'html-forms' ); ?>
+       <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/add-users-to-a-mailchimp-list/"><span class="dashicons dashicons-editor-help"></span></a>
+       </p>
+
 	   <table class="form-table">
 		<tr valign="top">
 			<th scope="row"><?php _e( 'List', 'html-forms' ); ?></th>

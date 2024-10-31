@@ -16,7 +16,6 @@
 			<div><strong><a href="https://chimpbridge.com/">ChimpBridge</a></strong></div>
 			<div>Create and send Mailchimp campaigns in WordPress.</div>
 		</div>
-		</div>
 
 		<div style="margin: 12px 0;">
 			<div><strong><a href="https://removewcfeatures.com/">Remove WooCommerce Features</a></strong></div>

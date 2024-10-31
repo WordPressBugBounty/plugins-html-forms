@@ -8,7 +8,10 @@
 
 <table class="form-table">
     <tr valign="top">
-        <th scope="row"><?php _e( 'Save Form Submissions?', 'html-forms' ); ?></th>
+        <th scope="row">
+            <?php _e( 'Save Form Submissions?', 'html-forms' ); ?>
+            <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/save-form-submissions/"><span class="dashicons dashicons-editor-help"></span></a>
+        </th>
         <td>
             <label><input type="radio" name="form[settings][save_submissions]" value="1" <?php checked( $form->settings['save_submissions'], 1 ); ?>> <?php _e( 'Yes' ); ?></label> &nbsp;
             <label><input type="radio"  name="form[settings][save_submissions]" value="0"  <?php checked( $form->settings['save_submissions'], 0 ); ?>> <?php _e( 'No' ); ?></label>
@@ -18,7 +21,10 @@
     </tr>
 
     <tr valign="top">
-        <th scope="row"><?php _e( 'Hide Form After a Successful Sign-Up?', 'html-forms' ); ?></th>
+        <th scope="row">
+            <?php _e( 'Hide Form After a Successful Sign-Up?', 'html-forms' ); ?>
+            <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/hide-form-fields-after-submission/"><span class="dashicons dashicons-editor-help"></span></a>
+        </th>
         <td class="nowrap">
             <label>
                 <input type="radio" name="form[settings][hide_after_success]" value="1" <?php checked( $form->settings['hide_after_success'], 1 ); ?> />&rlm;
@@ -35,7 +41,10 @@
     </tr>
 
     <tr valign="top">
-        <th scope="row"><label for="hf_form_redirect"><?php _e( 'Redirect to URL After Successful Sign-Ups', 'html-forms' ); ?></label></th>
+        <th scope="row">
+            <label for="hf_form_redirect"><?php _e( 'Redirect to URL After Successful Sign-Ups', 'html-forms' ); ?></label>
+            <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/redirect-url-form-submission/"><span class="dashicons dashicons-editor-help"></span></a>
+        </th>
         <td>
             <input type="text" class="widefat" name="form[settings][redirect_url]" id="hf_form_redirect" placeholder="<?php printf( __( 'Example: %s', 'html-forms' ), esc_attr( site_url( '/thank-you/' ) ) ); ?>" value="<?php echo esc_attr( $form->settings['redirect_url'] ); ?>" />
             <p class="description">

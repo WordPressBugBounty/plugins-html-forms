@@ -353,6 +353,7 @@ class Admin {
 		}
 
 		$submission = hf_get_form_submission( (int) $_GET['submission_id'] );
+        do_action( 'hf_admin_form_submissions_detail', $submission );
 		require dirname( $this->plugin_file ) . '/views/tab-submissions-detail.php';
 	}
 

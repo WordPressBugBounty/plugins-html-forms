@@ -41,7 +41,10 @@ function tablenav_pages( $total_items, $current_page, $total_pages ) {
  */
 ?>
 
-<h2><?php _e( 'Form Submissions', 'html-forms' ); ?></h2>
+<h2>
+    <?php _e( 'Form Submissions', 'html-forms' ); ?>
+    <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/form-submissions/"><span class="dashicons dashicons-editor-help"></span></a>
+</h2>
 
 <?php if ( ! defined( 'HF_PREMIUM_VERSION' ) ) : ?>
 <p class="hf-premium">

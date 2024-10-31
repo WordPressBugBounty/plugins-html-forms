@@ -37,6 +37,12 @@ class Email extends Action {
 		?>
 	   <span class="hf-action-summary"><?php printf( 'From %s. To %s.', $settings['from'], $settings['to'] ); ?></span>
 	   <input type="hidden" name="form[settings][actions][<?php echo $index; ?>][type]" value="<?php echo $this->type; ?>" />
+
+       <p class="description">
+       <?php _e( 'Send out an email notification whenever this form is successfully submitted.', 'html-forms' ); ?>
+       <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/sending-email-notifications/"><span class="dashicons dashicons-editor-help"></span></a>
+       </p>
+
 	   <table class="form-table">
 		   <tr>
 			   <th><label><?php echo __( 'From', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
