@@ -67,8 +67,8 @@ if ( class_exists( 'WP_List_Table' ) ) {
 			$count_any = $counts->publish + $counts->draft + $counts->future + $counts->pending;
 
 			return array(
-				''      => sprintf( '<a href="%s" class="%s">%s</a> (%d)', remove_query_arg( 'post_status' ), $current == '' ? 'current' : '', __( 'All', 'html-forms' ), $count_any ),
-				'trash' => sprintf( '<a href="%s" class="%s">%s</a> (%d)', add_query_arg( array( 'post_status' => 'trash' ) ), $current == 'trash' ? 'current' : '', __( 'Trash', 'html-forms' ), $counts->trash ),
+				''      => sprintf( '<a href="%s" class="%s">%s</a> (%d)', esc_url( remove_query_arg( 'post_status' ) ), $current == '' ? 'current' : '', __( 'All', 'html-forms' ), $count_any ),
+				'trash' => sprintf( '<a href="%s" class="%s">%s</a> (%d)', esc_url( add_query_arg( array( 'post_status' => 'trash' ) ) ), $current == 'trash' ? 'current' : '', __( 'Trash', 'html-forms' ), $counts->trash ),
 			);
 		}
 

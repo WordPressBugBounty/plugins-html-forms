@@ -3,7 +3,7 @@
 Plugin Name: HTML Forms
 Plugin URI: https://htmlformsplugin.com/
 Description: Not just another forms plugin. Simple and flexible.
-Version: 1.4.1
+Version: 1.4.2
 Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 License: GPL v3
@@ -59,7 +59,7 @@ function _bootstrap() {
     }
 }
 
-define('HTML_FORMS_VERSION', '1.4.1');
+define('HTML_FORMS_VERSION', '1.4.2');
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';
