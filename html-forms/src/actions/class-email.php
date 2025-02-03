@@ -106,20 +106,20 @@ class Email extends Action {
 		$settings   = array_merge( $this->get_default_settings(), $settings );
 		$html_email = $settings['content_type'] === 'text/html';
 
-		$to = hf_replace_data_variables( $settings['to'], $submission->data, 'strip_tags' );
+		$to = hf_replace_data_variables( $settings['to'], $submission, 'strip_tags' );
 		$to = apply_filters( 'hf_action_email_to', $to, $submission );
 
-		$subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission->data, 'strip_tags' ) : '';
+		$subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission, 'strip_tags' ) : '';
 		$subject = apply_filters( 'hf_action_email_subject', $subject, $submission );
 
-		$message = hf_replace_data_variables( $settings['message'], $submission->data, $html_email ? 'esc_html' : null );
+		$message = hf_replace_data_variables( $settings['message'], $submission, $html_email ? 'esc_html' : null );
         $message = ! $html_email ? str_replace( '<br />', '', $message ) : $message;
 		$message = apply_filters( 'hf_action_email_message', $message, $submission );
 
 		// parse additional email headers from settings
 		$headers = array();
 		if ( ! empty( $settings['headers'] ) ) {
-			$headers = explode( PHP_EOL, hf_replace_data_variables( $settings['headers'], $submission->data, 'strip_tags' ) );
+			$headers = explode( PHP_EOL, hf_replace_data_variables( $settings['headers'], $submission, 'strip_tags' ) );
 		}
 
 		$content_type = $html_email ? 'text/html' : 'text/plain';
@@ -127,7 +127,7 @@ class Email extends Action {
 		$headers[]    = sprintf( 'Content-Type: %s; charset=%s', $content_type, $charset );
 
 		if ( ! empty( $settings['from'] ) ) {
-			$from      = apply_filters( 'hf_action_email_from', hf_replace_data_variables( $settings['from'], $submission->data, 'strip_tags' ), $submission );
+			$from      = apply_filters( 'hf_action_email_from', hf_replace_data_variables( $settings['from'], $submission, 'strip_tags' ), $submission );
 			$headers[] = sprintf( 'From: %s', $from );
 		}
 

@@ -254,15 +254,42 @@ function hf_template( $template ) {
  * @param Closure|string $escape_function
  * @return string
  */
-function hf_replace_data_variables( $string, $data = array(), $escape_function = null ) {
+function hf_replace_data_variables( $string, Submission $submission, $escape_function = null ) {
+    $data = ( !empty( $submission->data ) ? $submission->data : array() );
+    $submission_fields = array( 'HF_TIMESTAMP', 'HF_USER_AGENT', 'HF_IP_ADDRESS', 'HF_REFERRER_URL' );
+
 	return preg_replace_callback(
 		'/\[(.+?)\]/',
-		function( $matches ) use ( $data, $escape_function ) {
+		function( $matches ) use ( $submission, $submission_fields, $escape_function  ) {
 			$key = $matches[1];
-			// replace spaces in name with underscores to match PHP requirement for keys in $_POST superglobal
-			$key         = str_replace( ' ', '_', $key );
-			$replacement = hf_array_get( $data, $key, '' );
-			$replacement = hf_field_value( $replacement, 0, $escape_function );
+
+            if ( in_array( $key, $submission_fields ) ) {
+                $replacement = '';
+
+                switch ( $key ) {
+                    case 'HF_TIMESTAMP' :
+                        $replacement = $submission->submitted_at;
+                        break;
+                    case 'HF_USER_AGENT' :
+                        $replacement = $submission->user_agent;
+                        break;
+                    case 'HF_IP_ADDRESS' :
+                        $replacement = $submission->ip_address;
+                        break;
+                    case 'HF_REFERRER_URL' :
+                        $replacement = $submission->referer_url;
+                        break;
+                    default :
+                        $replacement = '';
+                        break;
+                }
+            } else {
+                // replace spaces in name with underscores to match PHP requirement for keys in $_POST superglobal
+                $key         = str_replace( ' ', '_', $key );
+                $replacement = hf_array_get( $submission->data, $key, '' );
+                $replacement = hf_field_value( $replacement, 0, $escape_function );
+            }
+
 			return $replacement;
 		},
 		$string

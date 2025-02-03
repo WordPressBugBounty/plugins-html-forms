@@ -7,6 +7,10 @@
 
 <table class="form-table hf-form-messages">
     <tr valign="top">
+        <th scope="row" colspan="2" class="hf-settings-header"><?php echo __( 'Submissions', 'html-forms' ); ?></th>
+    </tr>
+
+    <tr valign="top">
         <th scope="row"><label for="hf_form_success"><?php _e( 'Success', 'html-forms' ); ?></label></th>
         <td>
             <input type="text" class="widefat" id="hf_form_success" name="form[messages][success]" value="<?php echo esc_attr( $form->messages['success'] ); ?>" required />
@@ -36,6 +40,7 @@
         </td>
 	</tr>
 
+	<?php do_action ('hf_admin_output_form_messages_submissions', $form ); ?>
 	<?php do_action ('hf_admin_output_form_messages', $form ); ?>
 
     <tr valign="top">

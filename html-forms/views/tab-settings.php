@@ -8,6 +8,10 @@
 
 <table class="form-table">
     <tr valign="top">
+        <th scope="row" colspan="2" class="hf-settings-header"><?php echo __( 'Submissions', 'html-forms' ); ?></th>
+    </tr>
+    
+    <tr valign="top">
         <th scope="row">
             <?php _e( 'Save Form Submissions?', 'html-forms' ); ?>
             <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/save-form-submissions/"><span class="dashicons dashicons-editor-help"></span></a>
@@ -51,7 +55,7 @@
                 <?php _e( 'Leave empty or enter <code>0</code> for no redirect. Otherwise, use complete (absolute) URLs, including <code>http://</code>.', 'html-forms' ); ?>
             </p>
             <p class="description">
-                <?php _e( 'You can use the following variables in the redirect URL: ', 'html-forms' ); ?><span class="hf-field-names"></span>
+                <?php _e( 'You can use the following variables in the redirect URL: ', 'html-forms' ); ?><br /><span class="hf-field-names"></span>
             </p>
         </td>
     </tr>
@@ -62,7 +66,9 @@
     *
     * @param $form
     */
-    do_action( 'hf_output_form_settings', $form ); ?>
+    do_action( 'hf_output_form_settings_submissions', $form );
+    do_action( 'hf_output_form_settings', $form );
+    ?>
 
 </table>
 

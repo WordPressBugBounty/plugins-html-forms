@@ -6,7 +6,7 @@ Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 Requires at least: 4.6
 Tested up to: 6.7
-Stable tag: 1.4.2
+Stable tag: 1.5.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
@@ -97,7 +97,7 @@ Yes! You can configure this by opening up the "Actions" tab when editing your fo
 
 ### Does the plugin include anti-spam measures?
 
-The plugin comes with built-in spam protection that should stop all automated attacks. When the built-in protection doesn't cut it, [WPBruiser](https://wordpress.org/plugins/goodbye-captcha/) surely will.
+The plugin comes with built-in spam protection that should stop many automated attacks. When the built-in protection doesn't cut it, we currently recommend using the [hCaptcha plugin](https://wordpress.org/plugins/hcaptcha-for-forms-and-more/). You can learn how to integrate hCaptcha with HTML Forms by reading our [guide](https://htmlformsplugin.com/kb/hcaptcha/).
 
 
 == Screenshots ==
@@ -112,6 +112,10 @@ The plugin comes with built-in spam protection that should stop all automated at
 
 
 == Changelog ==
+
+#### 1.5.0
+- New Variables for HTML Forms Submission Data (Timestamp, User Agent, IP Address, and Referrer URL).
+- Interface changes.
 
 #### 1.4.2
 - Bug fix to prevent XSS on HTML Forms list table.
