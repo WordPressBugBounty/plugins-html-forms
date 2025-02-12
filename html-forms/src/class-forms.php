@@ -235,6 +235,7 @@ class Forms {
 		$form_id    = (int) $data['_hf_form_id'];
 		$form       = hf_get_form( $form_id );
 		$error_code = $this->validate_form( $form, $data );
+        $submission = null;
 
 		if ( empty( $error_code ) ) {
 			/**
@@ -330,8 +331,8 @@ class Forms {
 		// Delay response until "wp_loaded" hook to give other plugins a chance to process stuff.
 		add_action(
 			'wp_loaded',
-			function() use ( $error_code, $form, $submission, $data ) {
-				$response = $this->get_response_for_error_code( $error_code, $form, $submission, $data );
+			function() use ( $error_code, $form, $data, $submission ) {
+				$response = $this->get_response_for_error_code( $error_code, $form, $data, $submission );
 
 				// clear output, some plugin or hooked code might have thrown errors by now.
 				if ( ob_get_level() > 0 ) {
@@ -377,7 +378,7 @@ class Forms {
 		);
 	}
 
-	private function get_response_for_error_code( $error_code, Form $form, Submission $submission, $data = array() ) {
+	private function get_response_for_error_code( $error_code, Form $form, $data = array(), Submission $submission = null ) {
 		// return success response for empty error code string or spam (to trick bots)
 		if ( $error_code === '' || $error_code === 'spam' ) {
 			$response = array(
@@ -388,7 +389,7 @@ class Forms {
 				'hide_form' => (bool) $form->settings['hide_after_success'],
 			);
 
-			if ( ! empty( $form->settings['redirect_url'] ) ) {
+			if ( ! empty( $form->settings['redirect_url'] ) && $submission !== null ) {
 				$response['redirect_url'] = hf_replace_data_variables( $form->settings['redirect_url'], $submission, 'urlencode' );
 			}
 

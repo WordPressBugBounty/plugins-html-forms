@@ -2,8 +2,8 @@
 /*
 Plugin Name: HTML Forms
 Plugin URI: https://htmlformsplugin.com/
-Description: Not just another forms plugin. Simple and flexible.
-Version: 1.5.0
+Description: A simpler, faster, and smarter WordPress forms plugin.
+Version: 1.5.1
 Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 License: GPL v3
@@ -34,15 +34,6 @@ function _bootstrap() {
     $forms = new Forms( __FILE__, $settings );
     $forms->hook();
 
-    // hook actions
-    $email_action = new Actions\Email();
-    $email_action->hook();
-
-    if( \class_exists( 'MC4WP_MailChimp' ) ) {
-        $mailchimp_action = new Actions\MailChimp();
-        $mailchimp_action->hook();
-    }
-
     if( is_admin() ) {
         if( ! \defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
             $admin = new Admin\Admin( __FILE__ );
@@ -59,12 +50,24 @@ function _bootstrap() {
     }
 }
 
-define('HTML_FORMS_VERSION', '1.5.0');
+function _hf_actions() {
+    $email_action = new Actions\Email();
+    $email_action->hook();
+
+    if( \class_exists( 'MC4WP_MailChimp' ) ) {
+        $mailchimp_action = new Actions\MailChimp();
+        $mailchimp_action->hook();
+    }
+}
+
+define('HTML_FORMS_VERSION', '1.5.1');
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';
 }
+
 add_action( 'plugins_loaded', 'HTML_Forms\\_bootstrap', 10 );
+add_action( 'init', 'HTML_Forms\\_hf_actions', 10 );
 
 register_activation_hook( __FILE__, '_hf_on_plugin_activation');
 

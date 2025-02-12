@@ -6,12 +6,12 @@ Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 Requires at least: 4.6
 Tested up to: 6.7
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
 
-Not just another contact form plugin.
+A simpler, faster, and smarter WordPress forms plugin.
 
 == Description ==
 
@@ -32,7 +32,7 @@ You define your form fields in HTML and the plugin takes care of submitting the 
 > ### 3. Show the form somewhere on your site
 > Show your form by using the `[hf_form]` shortcode in your WordPress posts, pages or widget areas.
 
-## HTML Forms features
+## HTML Forms Features
 
 - Full control over the HTML for the form fields. If you want, we'll help you in generating the field HTML though.
 - Each form submission is automatically saved in your database and can be viewed in a simple table format.
@@ -43,7 +43,7 @@ You define your form fields in HTML and the plugin takes care of submitting the 
 - Field validation.
 - Developer friendly. HTML Forms comes with a myriad of [JavaScript events](https://htmlformsplugin.com/kb/javascript-events/) and WordPress hooks that allow you to modify or extend the plugin's default behavior.
 
-## Who is this for?
+## The Perfect WordPress Form Plugin For Everyone
 
 HTML Forms is for everyone that wants a flexible & high performing form solution.
 
@@ -54,6 +54,21 @@ HTML Forms is for everyone that wants a flexible & high performing form solution
 With HTML Forms you can create any type of form. A contact form, email form, registration form, price quote form, you name it.
 
 For more information, please visit [htmlformsplugin.com](https://htmlformsplugin.com/).
+
+## HTML Forms Premium
+
+HTML Forms Premium is a paid add-on that extends the functionality of the free plugin. It includes:
+
+- Submission Notifications
+- File Uploads
+- Webhooks
+- Submission Export
+- Submission Limits
+- Require Users to Log In
+- Data and Column Management
+- and more...
+
+For additional information, please visit [htmlformsplugin.com/premium](https://htmlformsplugin.com/premium).
 
 ### Support
 
@@ -82,7 +97,7 @@ For more information, please refer to the [HTML Forms Knowledge Base](https://ht
 Start by going through the [HTML Forms knowledge base](https://htmlformsplugin.com/kb/#utm_source=wp-plugin-repo&utm_medium=html-forms&utm_campaign=plugin-faq) where we cover a wide range of frequently asked questions.
 
 #### How to display a form in posts or pages?
-Use the `[hf_form]` shortcode.
+Use the `[hf_form]` shortcode or the included block, in the block editor, to embed your form.
 
 #### How to display a form in widget areas like the sidebar or footer?
 Go to **Appearance > Widgets**, add the "Text Widget" to any of your widget areas and use the `[hf_form]` shortcode.
@@ -112,6 +127,11 @@ The plugin comes with built-in spam protection that should stop many automated a
 
 
 == Changelog ==
+
+#### 1.5.1
+- Bug fix when getting error code responses when submission data is unavailable.
+- Bug fix for _load_textdomain_just_in_time error when plugin text is being translated.
+- Interface changes.
 
 #### 1.5.0
 - New Variables for HTML Forms Submission Data (Timestamp, User Agent, IP Address, and Referrer URL).

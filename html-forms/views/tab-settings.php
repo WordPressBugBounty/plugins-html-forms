@@ -2,7 +2,7 @@
 
 <?php if ( ! defined( 'HF_PREMIUM_VERSION' ) ) : ?>
     <p class="hf-premium">
-        <?php echo sprintf( __('Enable admin notifications and set a form submission limit with <a href="%s">HTML Forms Premium</a>', 'html-forms' ), 'https://htmlformsplugin.com/premium/#utm_source=wp-plugin&amp;utm_medium=html-forms&amp;utm_campaign=actions-tab' ); ?>.
+        <?php echo sprintf( __('Enable submission notifications, set a form submission limit, require users to login, and more with <a href="%s">HTML Forms Premium</a>', 'html-forms' ), 'https://htmlformsplugin.com/premium/#utm_source=wp-plugin&amp;utm_medium=html-forms&amp;utm_campaign=actions-tab' ); ?>.
     </p>
 <?php endif; ?>
 
@@ -13,7 +13,7 @@
     
     <tr valign="top">
         <th scope="row">
-            <?php _e( 'Save Form Submissions?', 'html-forms' ); ?>
+            <?php _e( 'Save Form Submissions', 'html-forms' ); ?>
             <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/save-form-submissions/"><span class="dashicons dashicons-editor-help"></span></a>
         </th>
         <td>
@@ -26,7 +26,7 @@
 
     <tr valign="top">
         <th scope="row">
-            <?php _e( 'Hide Form After a Successful Sign-Up?', 'html-forms' ); ?>
+            <?php _e( 'Hide Form After Successful Submission', 'html-forms' ); ?>
             <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/hide-form-fields-after-submission/"><span class="dashicons dashicons-editor-help"></span></a>
         </th>
         <td class="nowrap">
@@ -39,14 +39,14 @@
                 <?php _e( 'No' ); ?>
             </label>
             <p class="description">
-                <?php _e(' Select "Yes" to hide the form fields after a successful sign-up.', 'html-forms' ); ?>
+                <?php _e(' Select "Yes" to hide the form fields after a successful submission.', 'html-forms' ); ?>
             </p>
         </td>
     </tr>
 
     <tr valign="top">
         <th scope="row">
-            <label for="hf_form_redirect"><?php _e( 'Redirect to URL After Successful Sign-Ups', 'html-forms' ); ?></label>
+            <label for="hf_form_redirect"><?php _e( 'Redirect to URL After Successful Submission', 'html-forms' ); ?></label>
             <a target="_blank" tabindex="-1" class="html-forms-help" href="https://htmlformsplugin.com/kb/redirect-url-form-submission/"><span class="dashicons dashicons-editor-help"></span></a>
         </th>
         <td>
