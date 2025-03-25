@@ -270,7 +270,7 @@ class Forms {
 			$submission->data         = $data;
 			$submission->ip_address   = ! empty( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( $_SERVER['REMOTE_ADDR'] ) : '';
 			$submission->user_agent   = ! empty( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( $_SERVER['HTTP_USER_AGENT'] ) : '';
-			$submission->referer_url  = ! empty( $_SERVER['HTTP_REFERER'] ) ? sanitize_text_field( $_SERVER['HTTP_REFERER'] ) : '';
+			$submission->referer_url  = ! empty( $_SERVER['HTTP_REFERER'] ) ? sanitize_url( $_SERVER['HTTP_REFERER'] ) : '';
 			$submission->submitted_at = gmdate( 'Y-m-d H:i:s' );
 
 			// save submission object so that other form processor have an insert ID to work with (eg file upload)

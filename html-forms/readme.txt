@@ -6,7 +6,7 @@ Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 Requires at least: 4.6
 Tested up to: 6.7
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
@@ -127,6 +127,10 @@ The plugin comes with built-in spam protection that should stop many automated a
 
 
 == Changelog ==
+
+#### 1.5.2
+- Bug fix to prevent XSS on Referrer URL data.
+- Interface changes.
 
 #### 1.5.1
 - Bug fix when getting error code responses when submission data is unavailable.

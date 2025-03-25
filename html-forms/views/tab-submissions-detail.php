@@ -57,7 +57,7 @@ $datetime_format = sprintf('%s %s', $date_format, get_option( 'time_format' ) );
 
             <tr>
                 <th><?php _e( 'Referrer URL', 'html-forms' ); ?></th>
-                <td><?php echo sprintf( '<a href="%s">%s</a>', esc_attr( $submission->referer_url ), esc_html( $submission->referer_url ) ); ?></td>
+                <td><?php echo sprintf( '<a href="%s">%s</a>', esc_attr( esc_url( $submission->referer_url ) ), esc_url( esc_html( $submission->referer_url ) ) ); ?></td>
             </tr>
             </tbody>
         </table>
