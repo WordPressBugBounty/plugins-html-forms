@@ -5,8 +5,8 @@ Tags: form, contact form, html form, email form, upload form
 Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 Requires at least: 4.6
-Tested up to: 6.7
-Stable tag: 1.5.2
+Tested up to: 6.8
+Stable tag: 1.5.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
@@ -127,6 +127,9 @@ The plugin comes with built-in spam protection that should stop many automated a
 
 
 == Changelog ==
+
+#### 1.5.3
+- Bug fix for shortcode.
 
 #### 1.5.2
 - Bug fix to prevent XSS on Referrer URL data.

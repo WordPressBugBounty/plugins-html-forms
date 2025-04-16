@@ -417,7 +417,7 @@ class Forms {
 			return '';
 		}
 
-		$slug_or_id = empty( $attributes['id'] ) ? $attributes['slug'] : $attributes['id'];
+		$slug_or_id = esc_attr( empty( $attributes['id'] ) ? $attributes['slug'] : $attributes['id'] );
 		try {
 			$form = hf_get_form( $slug_or_id );
 		} catch ( \Exception $e ) {
@@ -425,7 +425,7 @@ class Forms {
 				return $content;
 			}
 
-			return sprintf( '<p><strong>%s</strong> %s</p>', __( 'Error:', 'html-forms' ), sprintf( __( 'No form found with slug %s', 'html-forms' ), $attributes['slug'] ) );
+			return sprintf( '<p><strong>%s</strong> %s</p>', __( 'Error:', 'html-forms' ), sprintf( __( 'No form found with slug %s', 'html-forms' ), esc_attr( $attributes['slug'] ) ) );
 		}
 
 		return $form . $content;
