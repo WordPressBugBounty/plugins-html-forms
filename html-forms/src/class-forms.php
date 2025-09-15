@@ -29,6 +29,8 @@ class Forms {
 	public function hook() {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'init', array( $this, 'listen_for_submit' ) );
++		add_action( 'wp_ajax_hf_form_submit', array( $this, 'listen_for_submit' ) );
++		add_action( 'wp_ajax_nopriv_hf_form_submit', array( $this, 'listen_for_submit' ) );
 		add_action( 'init', array( $this, 'register_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'parse_request', array( $this, 'listen_for_preview' ) );
@@ -224,16 +226,17 @@ class Forms {
 	}
 
 	public function listen_for_submit() {
-		// only respond to AJAX requests with _hf_form_id set.
-		if ( empty( $_POST['_hf_form_id'] )
-			|| empty( $_SERVER['HTTP_X_REQUESTED_WITH'] )
-			|| strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) !== strtolower( 'XMLHttpRequest' ) ) {
-			return;
-		}
+        if ( ! check_ajax_referer( 'html_forms_submit', false, false ) || empty( $_POST['_hf_form_id'] ) ) {
+            return;
+        }
 
 		$data       = $this->get_request_data();
 		$form_id    = (int) $data['_hf_form_id'];
-		$form       = hf_get_form( $form_id );
+        try {
+            $form = hf_get_form( $form_id );
+        } catch ( \Exception $e ) {
+ 			return;
+ 		}
 		$error_code = $this->validate_form( $form, $data );
         $submission = null;
 
@@ -329,24 +332,8 @@ class Forms {
 		}
 
 		// Delay response until "wp_loaded" hook to give other plugins a chance to process stuff.
-		add_action(
-			'wp_loaded',
-			function() use ( $error_code, $form, $data, $submission ) {
-				$response = $this->get_response_for_error_code( $error_code, $form, $data, $submission );
-
-				// clear output, some plugin or hooked code might have thrown errors by now.
-				if ( ob_get_level() > 0 ) {
-					ob_end_clean();
-				}
-
-				send_origin_headers();
-				send_nosniff_header();
-				nocache_headers();
-
-				wp_send_json( $response, 200 );
-				exit;
-			}
-		);
+        $response = $this->get_response_for_error_code( $error_code, $form, $data, $submission );
+        wp_send_json( $response, 200 );
 	}
 
 	public function listen_for_preview() {

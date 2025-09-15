@@ -10,6 +10,7 @@ class Hcaptcha {
     public function ignored_fields() {
         return array(
             'hcaptcha-widget-id',
+            'hcap_fst_token',
             'g-recaptcha-response',
             'h-captcha-response',
             'html_forms_form_nonce',

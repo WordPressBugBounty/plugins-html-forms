@@ -56,6 +56,7 @@ class Form {
 		$html  = '';
 		$html .= sprintf( '<!-- HTML Forms v%s - %s -->', HTML_FORMS_VERSION, 'https://wordpress.org/plugins/html-forms/' ) . PHP_EOL;
 		$html .= sprintf( '<form method="post" %s class="hf-form hf-form-%d %s" %s>', $form_action_attr, $this->ID, esc_attr( $form_classes_attr ), $data_attributes );
+        $html .= wp_nonce_field( 'html_forms_submit', '_wpnonce', true, false );
 
 		$html .= sprintf( '<input type="hidden" name="_hf_form_id" value="%d" />', $this->ID );
 		$html .= sprintf( '<div style="display: none;"><input type="text" name="_hf_h%d" value="" /></div>', $this->ID );
