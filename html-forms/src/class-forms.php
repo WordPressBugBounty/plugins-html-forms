@@ -28,9 +28,8 @@ class Forms {
 
 	public function hook() {
 		add_action( 'init', array( $this, 'register' ) );
-		add_action( 'init', array( $this, 'listen_for_submit' ) );
-+		add_action( 'wp_ajax_hf_form_submit', array( $this, 'listen_for_submit' ) );
-+		add_action( 'wp_ajax_nopriv_hf_form_submit', array( $this, 'listen_for_submit' ) );
+        add_action( 'wp_ajax_hf_form_submit', array( $this, 'listen_for_submit' ) );
+        add_action( 'wp_ajax_nopriv_hf_form_submit', array( $this, 'listen_for_submit' ) );
 		add_action( 'init', array( $this, 'register_assets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'parse_request', array( $this, 'listen_for_preview' ) );
@@ -226,8 +225,16 @@ class Forms {
 	}
 
 	public function listen_for_submit() {
-        if ( ! check_ajax_referer( 'html_forms_submit', false, false ) || empty( $_POST['_hf_form_id'] ) ) {
-            return;
+        if ( ! check_ajax_referer( 'html_forms_submit', '_wpnonce', false ) || empty( $_POST['_hf_form_id'] ) ) {
+            wp_send_json(
+                array(
+                    'message' => array(
+                        'type' => 'warning',
+                        'text' => __( 'Something went wrong. Please reload the page and try again.', 'html-forms' ),
+                    ),
+                    'error' => 'error',
+                ),
+            200 );
         }
 
 		$data       = $this->get_request_data();
