@@ -5,8 +5,8 @@ Tags: form, contact form, html form, email form, upload form
 Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 Requires at least: 4.6
-Tested up to: 6.8
-Stable tag: 1.5.5
+Tested up to: 6.9
+Stable tag: 1.6.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
@@ -112,7 +112,7 @@ Yes! You can configure this by opening up the "Actions" tab when editing your fo
 
 ### Does the plugin include anti-spam measures?
 
-The plugin comes with built-in spam protection that should stop many automated attacks. When the built-in protection doesn't cut it, we currently recommend using the [hCaptcha plugin](https://wordpress.org/plugins/hcaptcha-for-forms-and-more/). You can learn how to integrate hCaptcha with HTML Forms by reading our [guide](https://htmlformsplugin.com/kb/hcaptcha/).
+We currently recommend using [Google reCAPTCHA v3](https://htmlformsplugin.com/kb/google-recaptcha/) or the [hCaptcha plugin](https://htmlformsplugin.com/kb/hcaptcha/).
 
 
 == Screenshots ==
@@ -127,6 +127,19 @@ The plugin comes with built-in spam protection that should stop many automated a
 
 
 == Changelog ==
+
+#### 1.6.2
+- Bug fix for PHP deprecation notice.
+
+#### 1.6.1
+- Bug fix for File Uploads field.
+
+#### 1.6.0
+- Added support for Google reCAPTCHA v3 as an anti-spam solution.
+- Added an "Enable Nonce" option to the plugin's settings.
+
+#### 1.5.6
+- Bug fix to prevent XSS on Send Email action interface.
 
 #### 1.5.5
 - Minor PHP syntax cleanup and interface change.

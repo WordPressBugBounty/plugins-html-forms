@@ -3,7 +3,7 @@
 Plugin Name: HTML Forms
 Plugin URI: https://htmlformsplugin.com/
 Description: A simpler, faster, and smarter WordPress forms plugin.
-Version: 1.5.5
+Version: 1.6.2
 Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 License: GPL v3
@@ -48,6 +48,12 @@ function _bootstrap() {
             $hcaptcha->hook();
         }
     }
+
+    // Initialize Google reCAPTCHA v3 (needs to run on both frontend and backend)
+    if( \class_exists( 'HTML_Forms\Admin\Recaptcha' ) ) {
+        $recaptcha = new Admin\Recaptcha();
+        $recaptcha->hook();
+    }
 }
 
 function _hf_actions() {
@@ -60,7 +66,7 @@ function _hf_actions() {
     }
 }
 
-define('HTML_FORMS_VERSION', '1.5.5');
+define('HTML_FORMS_VERSION', '1.6.2');
 
 if( ! function_exists( 'hf_get_form' ) ) {
     require __DIR__ . '/vendor/autoload.php';

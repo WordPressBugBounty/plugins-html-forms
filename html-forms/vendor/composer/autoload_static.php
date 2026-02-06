@@ -19,6 +19,7 @@ class ComposerStaticInit4c9280af2fa7b60b352430cf33ad5523
         'HTML_Forms\\Admin\\GDPR' => __DIR__ . '/../..' . '/src/admin/class-gdpr.php',
         'HTML_Forms\\Admin\\Hcaptcha' => __DIR__ . '/../..' . '/src/admin/class-hcaptcha.php',
         'HTML_Forms\\Admin\\Migrations' => __DIR__ . '/../..' . '/src/admin/class-migrations.php',
+        'HTML_Forms\\Admin\\Recaptcha' => __DIR__ . '/../..' . '/src/admin/class-recaptcha.php',
         'HTML_Forms\\Admin\\Table' => __DIR__ . '/../..' . '/src/admin/class-table.php',
         'HTML_Forms\\Form' => __DIR__ . '/../..' . '/src/class-form.php',
         'HTML_Forms\\Forms' => __DIR__ . '/../..' . '/src/class-forms.php',

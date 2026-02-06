@@ -78,6 +78,8 @@ function hf_get_form( $form_id_or_slug ) {
 		'invalid_email'          => __( 'Sorry, that email address looks invalid.', 'html-forms' ),
 		'required_field_missing' => __( 'Please fill in the required fields.', 'html-forms' ),
 		'error'                  => __( 'Oops. An error occurred.', 'html-forms' ),
+		'recaptcha_failed'       => __( 'reCAPTCHA verification failed. Please try again.', 'html-forms' ),
+		'recaptcha_low_score'    => __( 'Your submission appears to be spam. Please try again.', 'html-forms' ),
 	);
 	$default_messages = apply_filters( 'hf_form_default_messages', $default_messages );
 	$messages         = array();
@@ -149,8 +151,13 @@ function hf_get_form_submission( $submission_id ) {
  */
 function hf_get_settings() {
 	$default_settings = array(
+		'enable_nonce' => 0,
 		'load_stylesheet' => 0,
         'wrapper_tag' => 'p',
+        'google_recaptcha' => array(
+            'site_key' => '',
+            'secret_key' => '',
+        ),
 	);
 
 	$settings = get_option( 'hf_settings', null );
@@ -163,6 +170,14 @@ function hf_get_settings() {
 
 	// merge with default settings
 	$settings = array_merge( $default_settings, $settings );
+	
+	// Ensure nested arrays are properly merged
+	if ( isset( $default_settings['google_recaptcha'] ) ) {
+		$settings['google_recaptcha'] = array_merge( 
+			$default_settings['google_recaptcha'], 
+			isset( $settings['google_recaptcha'] ) ? $settings['google_recaptcha'] : array() 
+		);
+	}
 
 	/**
 	* Filters the global HTML Forms hf_settings
@@ -313,13 +328,27 @@ function hf_field_value( $value, $limit = 0, $escape_function = 'esc_html' ) {
 	}
 
 	if ( hf_is_file( $value ) ) {
+        if ( ! is_array( $value )
+            || ! isset( $value['name'] )
+            || ! isset( $value['size'] )
+            || ! isset( $value['type'] )
+            || ! isset( $value['attachment_id'] ) ) {
+            return false;
+        }
+        
+        // Verify attachment exists
+        if ( get_post( $value['attachment_id'] ) == null ) {
+            return __( 'File not found', 'html-forms' );
+        }
+
 		$file_url = isset( $value['url'] ) ? $value['url'] : '';
 		if ( isset( $value['attachment_id'] ) && apply_filters( 'hf_file_upload_use_direct_links', false ) === false ) {
 			$file_url = admin_url( sprintf( 'post.php?action=edit&post=%d', $value['attachment_id'] ) );
 		}
+        
 		$short_name = substr( $value['name'], 0, 20 );
 		$suffix     = strlen( $value['name'] ) > 20 ? '...' : '';
-		return sprintf( '<a href="%s">%s%s</a> (%s)', esc_attr( $file_url ), esc_html( $short_name ), esc_html( $suffix ), hf_human_filesize( $value['size'] ) );
+		return sprintf( '<a href="%s">%s%s</a> (%s)', esc_url( $file_url ), esc_html( $short_name ), esc_html( $suffix ), hf_human_filesize( $value['size'] ) );
 	}
 
 	if ( hf_is_date( $value ) ) {

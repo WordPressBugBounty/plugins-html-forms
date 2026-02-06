@@ -35,7 +35,7 @@ class Email extends Action {
 	public function page_settings( $settings, $index ) {
 		$settings = array_merge( $this->get_default_settings(), $settings );
 		?>
-	   <span class="hf-action-summary"><?php printf( 'From %s. To %s.', $settings['from'], $settings['to'] ); ?></span>
+	   <span class="hf-action-summary"><?php printf( 'From %s. To %s.', esc_html($settings['from']), esc_html($settings['to']) ); ?></span>
 	   <input type="hidden" name="form[settings][actions][<?php echo $index; ?>][type]" value="<?php echo $this->type; ?>" />
 
        <p class="description">

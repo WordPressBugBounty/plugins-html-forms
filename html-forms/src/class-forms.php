@@ -225,7 +225,13 @@ class Forms {
 	}
 
 	public function listen_for_submit() {
-        if ( ! check_ajax_referer( 'html_forms_submit', '_wpnonce', false ) || empty( $_POST['_hf_form_id'] ) ) {
+        // Check nonce only if enabled in settings
+        $nonce_check_failed = false;
+        if ( $this->settings['enable_nonce'] ) {
+            $nonce_check_failed = ! check_ajax_referer( 'html_forms_submit', '_wpnonce', false );
+        }
+        
+        if ( $nonce_check_failed || empty( $_POST['_hf_form_id'] ) ) {
             wp_send_json(
                 array(
                     'message' => array(
@@ -372,7 +378,7 @@ class Forms {
 		);
 	}
 
-	private function get_response_for_error_code( $error_code, Form $form, $data = array(), Submission $submission = null ) {
+	private function get_response_for_error_code( $error_code, Form $form, $data = array(), ?Submission $submission = null ) {
 		// return success response for empty error code string or spam (to trick bots)
 		if ( $error_code === '' || $error_code === 'spam' ) {
 			$response = array(

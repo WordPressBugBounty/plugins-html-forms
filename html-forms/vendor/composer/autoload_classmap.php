@@ -14,6 +14,7 @@ return array(
     'HTML_Forms\\Admin\\GDPR' => $baseDir . '/src/admin/class-gdpr.php',
     'HTML_Forms\\Admin\\Hcaptcha' => $baseDir . '/src/admin/class-hcaptcha.php',
     'HTML_Forms\\Admin\\Migrations' => $baseDir . '/src/admin/class-migrations.php',
+    'HTML_Forms\\Admin\\Recaptcha' => $baseDir . '/src/admin/class-recaptcha.php',
     'HTML_Forms\\Admin\\Table' => $baseDir . '/src/admin/class-table.php',
     'HTML_Forms\\Form' => $baseDir . '/src/class-form.php',
     'HTML_Forms\\Forms' => $baseDir . '/src/class-forms.php',

@@ -68,8 +68,7 @@
     */
     do_action( 'hf_output_form_settings_submissions', $form );
     do_action( 'hf_output_form_settings', $form );
-    ?>
-
+?>
 </table>
 
 <?php submit_button(); ?>

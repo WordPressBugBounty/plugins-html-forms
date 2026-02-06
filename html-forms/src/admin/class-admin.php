@@ -28,7 +28,9 @@ class Admin {
 		add_action( 'admin_init', array( $this, 'listen' ) );
 		add_action( 'admin_print_styles', array( $this, 'assets' ) );
 		add_action( 'admin_head', array( $this, 'add_screen_options' ) );
-		add_action( 'hf_admin_action_create_form', array( $this, 'process_create_form' ) );
+        add_action( 'hf_admin_action_create_form', array( $this, 'process_create_form' ) );
+		add_action( 'wp_ajax_hf_admin_action', array( $this, 'handle_admin_action' ) );
+		add_action( 'wp_ajax_hf_dismiss_recaptcha_notice', array( $this, 'dismiss_recaptcha_notice' ) );
 		add_action( 'hf_admin_action_save_form', array( $this, 'process_save_form' ) );
 		add_action( 'hf_admin_action_bulk_delete_submissions', array( $this, 'process_bulk_delete_submissions' ) );
 
