@@ -331,13 +331,12 @@ function hf_field_value( $value, $limit = 0, $escape_function = 'esc_html' ) {
         if ( ! is_array( $value )
             || ! isset( $value['name'] )
             || ! isset( $value['size'] )
-            || ! isset( $value['type'] )
-            || ! isset( $value['attachment_id'] ) ) {
+            || ! isset( $value['type'] ) ) {
             return false;
         }
         
         // Verify attachment exists
-        if ( get_post( $value['attachment_id'] ) == null ) {
+        if ( isset( $value['attachment_id'] ) && get_post( $value['attachment_id'] ) == null ) {
             return __( 'File not found', 'html-forms' );
         }
 

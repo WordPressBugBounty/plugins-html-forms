@@ -6,7 +6,7 @@ Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 Requires at least: 4.6
 Tested up to: 6.9
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
@@ -127,6 +127,9 @@ We currently recommend using [Google reCAPTCHA v3](https://htmlformsplugin.com/k
 
 
 == Changelog ==
+
+#### 1.6.3
+- Bug fix for File Uploads field display.
 
 #### 1.6.2
 - Bug fix for PHP deprecation notice.
