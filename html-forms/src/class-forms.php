@@ -390,7 +390,13 @@ class Forms {
 			);
 
 			if ( ! empty( $form->settings['redirect_url'] ) && $submission !== null ) {
-				$response['redirect_url'] = hf_replace_data_variables( $form->settings['redirect_url'], $submission, 'urlencode' );
+				$url = hf_replace_data_variables( $form->settings['redirect_url'], $submission, 'urlencode' );
+
+				// Validate the scheme again to prevent javascript: XSS
+				$scheme = wp_parse_url( $url, PHP_URL_SCHEME );
+				if ( $scheme === null || in_array( strtolower( $scheme ), array( 'http', 'https' ), true ) ) {
+					$response['redirect_url'] = $url;
+				}
 			}
 
 			return apply_filters( 'hf_form_response', $response, $form, $data );

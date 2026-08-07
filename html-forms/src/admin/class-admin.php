@@ -23,13 +23,13 @@ class Admin {
 
 	public function hook() {
 		add_action( 'admin_menu', array( $this, 'menu' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'menu_icon' ) );
 		add_action( 'init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'run_migrations' ) );
 		add_action( 'admin_init', array( $this, 'listen' ) );
 		add_action( 'admin_print_styles', array( $this, 'assets' ) );
 		add_action( 'admin_head', array( $this, 'add_screen_options' ) );
         add_action( 'hf_admin_action_create_form', array( $this, 'process_create_form' ) );
-		add_action( 'wp_ajax_hf_admin_action', array( $this, 'handle_admin_action' ) );
 		add_action( 'wp_ajax_hf_dismiss_recaptcha_notice', array( $this, 'dismiss_recaptcha_notice' ) );
 		add_action( 'hf_admin_action_save_form', array( $this, 'process_save_form' ) );
 		add_action( 'hf_admin_action_bulk_delete_submissions', array( $this, 'process_bulk_delete_submissions' ) );
@@ -91,9 +91,29 @@ class Admin {
 	 * @return array
 	 */
 	public function sanitize_settings( $dirty ) {
-        if ( isset( $dirty['wrapper_tag'] ) ) {
-            $dirty['wrapper_tag'] = sanitize_text_field( $dirty['wrapper_tag'] );
-        }
+		$int_fields = array( 'enable_nonce', 'load_stylesheet', 'direct_links', 'media_library_uploads', 'maximum_filesize' );
+		foreach ( $int_fields as $field ) {
+			if ( isset( $dirty[ $field ] ) ) {
+				$dirty[ $field ] = absint( $dirty[ $field ] );
+			}
+		}
+
+		if ( isset( $dirty['wrapper_tag'] ) ) {
+			$allowed_tags = array( 'p', 'div', 'span' );
+			$dirty['wrapper_tag'] = in_array( $dirty['wrapper_tag'], $allowed_tags, true ) ? $dirty['wrapper_tag'] : 'p';
+		}
+
+		if ( isset( $dirty['submissions_export_delimiter'] ) ) {
+			$dirty['submissions_export_delimiter'] = sanitize_text_field( $dirty['submissions_export_delimiter'] );
+		}
+
+		if ( isset( $dirty['google_recaptcha'] ) && is_array( $dirty['google_recaptcha'] ) ) {
+			foreach ( array( 'site_key', 'secret_key' ) as $key ) {
+				if ( isset( $dirty['google_recaptcha'][ $key ] ) ) {
+					$dirty['google_recaptcha'][ $key ] = sanitize_text_field( $dirty['google_recaptcha'][ $key ] );
+				}
+			}
+		}
 
 		return $dirty;
 	}
@@ -159,9 +179,8 @@ class Admin {
 
 	public function menu() {
 		$capability = 'edit_forms';
-		$svg_icon   = '<svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="256.000000pt" height="256.000000pt" viewBox="0 0 256.000000 256.000000" preserveAspectRatio="xMidYMid meet"><g transform="translate(0.000000,256.000000) scale(0.100000,-0.100000)"
-			fill="#000000" stroke="none"><path d="M0 1280 l0 -1280 1280 0 1280 0 0 1280 0 1280 -1280 0 -1280 0 0 -1280z m2031 593 c8 -8 9 -34 4 -78 -6 -56 -9 -65 -23 -60 -43 16 -98 15 -132 -2 -50 -26 -72 -72 -78 -159 l-5 -74 92 0 91 0 0 -70 0 -70 -90 0 -90 0 0 -345 0 -345 -90 0 -90 0 0 345 0 345 -55 0 -55 0 0 70 0 70 55 0 55 0 0 38 c0 63 20 153 45 202 54 105 141 152 273 147 45 -2 87 -8 93 -14z m-1291 -288 l0 -235 230 0 230 0 0 235 0 235 90 0 90 0 0 -575 0 -575 -90 0 -90 0 0 260 0 260 -230 0 -230 0 0 -260 0 -260 -90 0 -90 0 0 575 0 575 90 0 90 0 0 -235z"/></g></svg>';
-		add_menu_page(
+		
+        add_menu_page(
 			'HTML Forms',
 			'HTML Forms',
 			$capability,
@@ -170,9 +189,10 @@ class Admin {
 				$this,
 				'page_overview',
 			),
-			'data:image/svg+xml;base64,' . base64_encode( $svg_icon ),
+			'none',
 			'99.88491'
 		);
+
 		add_submenu_page(
 			'html-forms',
 			__( 'Forms', 'html-forms' ),
@@ -184,6 +204,7 @@ class Admin {
 				'page_overview',
 			)
 		);
+
 		add_submenu_page(
 			'html-forms',
 			__( 'Add New Form', 'html-forms' ),
@@ -195,6 +216,7 @@ class Admin {
 				'page_new_form',
 			)
 		);
+
 		add_submenu_page(
 			'html-forms',
 			__( 'Settings', 'html-forms' ),
@@ -221,6 +243,12 @@ class Admin {
 			);
 		}
 	}
+
+    public function menu_icon() {
+	    $html_forms_icon = 'data:image/svg+xml;base64,'.base64_encode('<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 256 256"><path d="M0 0v256h256V0zm203.1 68.7c.8.8.9 3.4.4 7.8-.6 5.6-.9 6.5-2.3 6-4.3-1.6-9.8-1.5-13.2.2-5 2.6-7.2 7.2-7.8 15.9l-.5 7.4H198v14h-18v69h-18v-69h-11v-14h11v-3.8c0-6.3 2-15.3 4.5-20.2 5.4-10.5 14.1-15.2 27.3-14.7 4.5.2 8.7.8 9.3 1.4M74 74v47h46V74h18v115h-18v-52H74v52H56V74z" /></svg>');
+		
+	    wp_add_inline_style( 'wp-admin', '#toplevel_page_html-forms .wp-menu-image { background-color: currentColor; mask-image: url("'.$html_forms_icon.'"); mask-size: 20px; mask-repeat: no-repeat; mask-position: center; }' );
+    }
 
 	public function add_screen_options() {
 		// only run on the submissions overview page (not detail)
@@ -406,6 +434,14 @@ class Admin {
 		);
 
 		if ( ! empty( $data['settings'] ) ) {
+			// Reject redirect URLs with non-http(s) schemes
+			if ( isset( $data['settings']['redirect_url'] ) && $data['settings']['redirect_url'] !== '' ) {
+				$scheme = wp_parse_url( $data['settings']['redirect_url'], PHP_URL_SCHEME );
+				if ( $scheme !== null && ! in_array( strtolower( $scheme ), array( 'http', 'https' ), true ) ) {
+					$data['settings']['redirect_url'] = '';
+				}
+			}
+
 			update_post_meta( $form_id, '_hf_settings', $data['settings'] );
 		}
 
@@ -487,9 +523,6 @@ class Admin {
 		$table        = $wpdb->prefix . 'hf_submissions';
 		$placeholders = rtrim( str_repeat( '%d,', count( $args ) ), ',' );
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN( {$placeholders} );", $args ) );
-
-		$args[] = '_hf_%%';
-		$wpdb->query( $wpdb->prepare( "DELETE FROM {$wpdb->postmeta} WHERE post_id IN ( {$placeholders}  ) AND meta_key LIKE %s;", $args ) );
 	}
 
 	private function get_default_form_content() {

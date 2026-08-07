@@ -36,7 +36,7 @@ class Email extends Action {
 		$settings = array_merge( $this->get_default_settings(), $settings );
 		?>
 	   <span class="hf-action-summary"><?php printf( 'From %s. To %s.', esc_html($settings['from']), esc_html($settings['to']) ); ?></span>
-	   <input type="hidden" name="form[settings][actions][<?php echo $index; ?>][type]" value="<?php echo $this->type; ?>" />
+	   <input type="hidden" name="form[settings][actions][<?php echo esc_attr($index); ?>][type]" value="<?php echo $this->type; ?>" />
 
        <p class="description">
        <?php _e( 'Send out an email notification whenever this form is successfully submitted.', 'html-forms' ); ?>
@@ -47,26 +47,26 @@ class Email extends Action {
 		   <tr>
 			   <th><label><?php echo __( 'From', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
 			   <td>
-				   <input name="form[settings][actions][<?php echo $index; ?>][from]" value="<?php echo esc_attr( $settings['from'] ); ?>" type="text" class="regular-text" placeholder="jane@email.com" required />
+				   <input name="form[settings][actions][<?php echo esc_attr($index); ?>][from]" value="<?php echo esc_attr( $settings['from'] ); ?>" type="text" class="regular-text" placeholder="jane@email.com" required />
 			   </td>
 		   </tr>
 		   <tr>
 			   <th><label><?php echo __( 'To', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
 			   <td>
-				   <input name="form[settings][actions][<?php echo $index; ?>][to]" value="<?php echo esc_attr( $settings['to'] ); ?>" type="text" class="regular-text" placeholder="john@email.com" required />
+				   <input name="form[settings][actions][<?php echo esc_attr($index); ?>][to]" value="<?php echo esc_attr( $settings['to'] ); ?>" type="text" class="regular-text" placeholder="john@email.com" required />
 			   </td>
 		   </tr>
 		   <tr>
 			   <th><label><?php echo __( 'Subject', 'html-forms' ); ?></label></th>
 			   <td>
-				   <input name="form[settings][actions][<?php echo $index; ?>][subject]" value="<?php echo esc_attr( $settings['subject'] ); ?>" type="text" class="regular-text" placeholder="<?php echo esc_attr( __( 'Your email subject', 'html-forms' ) ); ?>" />
+				   <input name="form[settings][actions][<?php echo esc_attr($index); ?>][subject]" value="<?php echo esc_attr( $settings['subject'] ); ?>" type="text" class="regular-text" placeholder="<?php echo esc_attr( __( 'Your email subject', 'html-forms' ) ); ?>" />
 			   </td>
 		   </tr>
 
 		   <tr>
 			   <th><label><?php echo __( 'Message', 'html-forms' ); ?> <span class="hf-required">*</span></label></th>
 			   <td>
-				   <textarea name="form[settings][actions][<?php echo $index; ?>][message]" rows="8" class="widefat" placeholder="<?php echo esc_attr( __( 'Your email message', 'html-forms' ) ); ?>" required><?php echo esc_textarea( $settings['message'] ); ?></textarea>
+				   <textarea name="form[settings][actions][<?php echo esc_attr($index); ?>][message]" rows="8" class="widefat" placeholder="<?php echo esc_attr( __( 'Your email message', 'html-forms' ) ); ?>" required><?php echo esc_textarea( $settings['message'] ); ?></textarea>
 				   <p class="help"><?php _e( 'You can use the following variables (in all fields): ', 'html-forms' ); ?><br /><span class="hf-field-names"></span></p>
 			   </td>
 		   </tr>
@@ -74,7 +74,7 @@ class Email extends Action {
 		   <tr>
 			   <th><label><?php echo __( 'Content Type', 'html-forms' ); ?></label></th>
 			   <td>
-				   <select name="form[settings][actions][<?php echo $index; ?>][content_type]" required>
+				   <select name="form[settings][actions][<?php echo esc_attr($index); ?>][content_type]" required>
 					  <option <?php selected( $settings['content_type'], 'text/plain' ); ?>>text/plain</option>
 					  <option <?php selected( $settings['content_type'], 'text/html' ); ?>>text/html</option>
 				   </select>
@@ -84,7 +84,7 @@ class Email extends Action {
 		   <tr>
 			   <th><label><?php echo __( 'Additional Headers', 'html-forms' ); ?></label></th>
 			   <td>
-				   <textarea name="form[settings][actions][<?php echo $index; ?>][headers]" rows="4" class="widefat" placeholder="<?php echo esc_attr( 'Reply-To: [NAME] <[EMAIL]>' ); ?>"><?php echo esc_textarea( $settings['headers'] ); ?></textarea>
+				   <textarea name="form[settings][actions][<?php echo esc_attr($index); ?>][headers]" rows="4" class="widefat" placeholder="<?php echo esc_attr( 'Reply-To: [NAME] <[EMAIL]>' ); ?>"><?php echo esc_textarea( $settings['headers'] ); ?></textarea>
 			   </td>
 		   </tr>
 	   </table>
@@ -106,10 +106,15 @@ class Email extends Action {
 		$settings   = array_merge( $this->get_default_settings(), $settings );
 		$html_email = $settings['content_type'] === 'text/html';
 
-		$to = hf_replace_data_variables( $settings['to'], $submission, 'strip_tags' );
+		// Strip newlines and tags from substituted values
+		$sanitize_header_value = function( $value ) {
+			return str_replace( array( "\r", "\n" ), '', strip_tags( $value ) );
+		};
+
+		$to = hf_replace_data_variables( $settings['to'], $submission, $sanitize_header_value );
 		$to = apply_filters( 'hf_action_email_to', $to, $submission );
 
-		$subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission, 'strip_tags' ) : '';
+		$subject = ! empty( $settings['subject'] ) ? hf_replace_data_variables( $settings['subject'], $submission, $sanitize_header_value ) : '';
 		$subject = apply_filters( 'hf_action_email_subject', $subject, $submission );
 
 		$message = hf_replace_data_variables( $settings['message'], $submission, $html_email ? 'esc_html' : null );
@@ -119,7 +124,7 @@ class Email extends Action {
 		// parse additional email headers from settings
 		$headers = array();
 		if ( ! empty( $settings['headers'] ) ) {
-			$headers = explode( PHP_EOL, hf_replace_data_variables( $settings['headers'], $submission, 'strip_tags' ) );
+			$headers = explode( PHP_EOL, hf_replace_data_variables( $settings['headers'], $submission, $sanitize_header_value ) );
 		}
 
 		$content_type = $html_email ? 'text/html' : 'text/plain';
@@ -127,7 +132,7 @@ class Email extends Action {
 		$headers[]    = sprintf( 'Content-Type: %s; charset=%s', $content_type, $charset );
 
 		if ( ! empty( $settings['from'] ) ) {
-			$from      = apply_filters( 'hf_action_email_from', hf_replace_data_variables( $settings['from'], $submission, 'strip_tags' ), $submission );
+			$from      = apply_filters( 'hf_action_email_from', hf_replace_data_variables( $settings['from'], $submission, $sanitize_header_value ), $submission );
 			$headers[] = sprintf( 'From: %s', $from );
 		}
 
