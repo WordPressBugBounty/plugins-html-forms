@@ -3,7 +3,7 @@
         'name' => 'ibericode/html-forms',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '7d0992856a88a88f5ca9ae7653b43ef40d8f20d9',
+        'reference' => '90ded1161d0fce91af09593bf42d2c7a12fa3ddf',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'ibericode/html-forms' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '7d0992856a88a88f5ca9ae7653b43ef40d8f20d9',
+            'reference' => '90ded1161d0fce91af09593bf42d2c7a12fa3ddf',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

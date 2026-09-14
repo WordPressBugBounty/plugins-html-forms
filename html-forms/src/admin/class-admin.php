@@ -41,6 +41,9 @@ class Admin {
 		add_action( 'hf_admin_output_form_tab_submissions', array( $this, 'tab_submissions_list' ) );
 		add_action( 'hf_admin_output_form_tab_submissions', array( $this, 'tab_submissions_detail' ) );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_gutenberg_assets' ) );
+		add_filter( 'set_screen_option_hf_submissions_per_page', function( $keep, $option, $value ) {
+			return (int) $value;
+		}, 10, 3 );
 	}
 
 	public function enqueue_gutenberg_assets() {
@@ -272,6 +275,11 @@ class Admin {
 			}
 		);
 		add_screen_option( 'layout_columns' );
+		add_screen_option( 'per_page', array(
+			'label'   => __( 'Submissions per page', 'html-forms' ),
+			'default' => 20,
+			'option'  => 'hf_submissions_per_page',
+		) );
 	}
 
 	public function page_overview() {
@@ -358,8 +366,17 @@ class Admin {
 			return;
 		}
 
-		$items_per_page = 500;
-		$total_items    = hf_count_form_submissions( $form->ID );
+		$items_per_page = (int) get_user_option( 'hf_submissions_per_page' );
+		if ( $items_per_page < 1 ) {
+			$items_per_page = 20;
+		}
+
+		$allowed_orderby = array( 'submitted_at' );
+		$orderby = isset( $_GET['orderby'] ) && in_array( $_GET['orderby'], $allowed_orderby, true ) ? $_GET['orderby'] : 'submitted_at';
+		$order   = isset( $_GET['order'] ) && strtolower( $_GET['order'] ) === 'asc' ? 'asc' : 'desc';
+		$search  = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+
+		$total_items    = hf_count_form_submissions( $form->ID, $search );
 		$total_pages    = max( 1, ceil( $total_items / $items_per_page ) );
 		$current_page   = isset( $_GET['paged'] ) ? intval( $_GET['paged'] ) : 1;
 		$current_page   = max( 1, $current_page );
@@ -367,8 +384,11 @@ class Admin {
 		$submissions    = hf_get_form_submissions(
 			$form->ID,
 			array(
-				'limit'  => $items_per_page,
-				'offset' => ( $current_page - 1 ) * $items_per_page,
+				'limit'   => $items_per_page,
+				'offset'  => ( $current_page - 1 ) * $items_per_page,
+				'orderby' => $orderby,
+				'order'   => $order,
+				'search'  => $search,
 			)
 		);
 		$columns        = $this->get_submission_columns( $submissions );

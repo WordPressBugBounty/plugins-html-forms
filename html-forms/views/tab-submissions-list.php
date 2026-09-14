@@ -38,6 +38,9 @@ function tablenav_pages( $total_items, $current_page, $total_pages ) {
  * @var int $total_items
  * @var int $current_page
  * @var int $total_pages
+ * @var string $orderby
+ * @var string $order
+ * @var string $search
  */
 ?>
 
@@ -53,6 +56,17 @@ function tablenav_pages( $total_items, $current_page, $total_pages ) {
 <?php endif; ?>
 
 </form><?php // close main form. This means this always has to be the last tab or it will break stuff. ?>
+<form method="get" class="search-form">
+    <input type="hidden" name="page" value="<?php echo esc_attr( $_GET['page'] ?? '' ); ?>" />
+    <input type="hidden" name="view" value="<?php echo esc_attr( $_GET['view'] ?? '' ); ?>" />
+    <input type="hidden" name="form_id" value="<?php echo esc_attr( $_GET['form_id'] ?? '' ); ?>" />
+    <input type="hidden" name="tab" value="<?php echo esc_attr( $_GET['tab'] ?? '' ); ?>" />
+    <p class="search-box">
+        <label class="screen-reader-text" for="hf-submission-search-input"><?php _e( 'Search Submissions', 'html-forms' ); ?></label>
+        <input type="search" id="hf-submission-search-input" name="s" value="<?php echo esc_attr( $search ); ?>" />
+        <input type="submit" class="button" value="<?php esc_attr_e( 'Search Submissions', 'html-forms' ); ?>" />
+    </p>
+</form>
 <form method="post">
     <div class="tablenav top">
         <div class="alignleft actions bulkactions">
@@ -72,57 +86,62 @@ function tablenav_pages( $total_items, $current_page, $total_pages ) {
         <br class="clear">
     </div>
 
-    <div style="overflow-x: auto;">
-    <table class="hf-submissions wp-list-table widefat striped">
-        <thead>
-            <tr>
-                <td id="cb" class="manage-column column-cb check-column"><input type="checkbox" /></td>
-                <th scope="col" class="hf-column manage-column column-primary">
-                  <?php _e( 'Timestamp', 'html-forms' ); ?>
+    <div style="overflow-x:auto; width:100%;">
+        <table class="hf-submissions wp-list-table widefat fixed striped table-view-list pages">
+            <thead>
+                <tr>
+                    <td id="cb" class="manage-column column-cb check-column"><input type="checkbox" /></td>
+                    <?php
+                    $next_order = $order === 'asc' ? 'desc' : 'asc';
+                    $ts_class   = 'sorted ' . $order;
+                    $ts_url     = esc_url( add_query_arg( array( 'orderby' => 'submitted_at', 'order' => $next_order, 'paged' => 1 ) ) );
+                    ?>
+                    <th scope="col" class="hf-column manage-column column-primary <?php echo $ts_class; ?>">
+                    <a href="<?php echo $ts_url; ?>"><span><?php _e( 'Timestamp', 'html-forms' ); ?></span><span class="sorting-indicator"></span></a>
+                    </th>
+                    <?php foreach( $columns as $field => $column ) {
+                        $hidden_class = in_array( $field, $hidden_columns ) ? 'hidden' : '';
+                        echo sprintf( '<th scope="col" class="hf-column hf-column-%s manage-column column-%s %s">', esc_attr( $field ), esc_attr( $field ), $hidden_class );
+                        do_action( 'hf_admin_form_submissions_table_output_column_header', $field, $column );
+                        echo '</th>';
+                    } ?>
+                </tr>
+            </thead>
+            <tbody>
+
+            <?php foreach( $submissions as $s ) { ?>
+            <tr id="hf-submissions-item-<?php echo $s->id; ?>">
+                <th scope="row" class="check-column">
+                    <input type="checkbox" name="id[]" value="<?php echo esc_attr( $s->id ); ?>"/>
                 </th>
+                <td class="has-row-actions column-primary">
+                        <nobr>
+                    <strong><abbr title="<?php echo date( $datetime_format, strtotime( $s->submitted_at ) ); ?>">
+                        <?php echo sprintf( '<a href="%s">%s</a>', esc_attr( add_query_arg( array( 'tab' => 'submissions', 'submission_id' => $s->id ) ) ), esc_html( date( $datetime_format, strtotime( $s->submitted_at ) ) ) ); ?>
+                    </abbr></strong>
+                    <div class="row-actions">
+                        <?php do_action( 'hf_admin_form_submissions_table_output_row_actions', $s ); ?>
+                    </div>
+                </td>
+
                 <?php foreach( $columns as $field => $column ) {
                     $hidden_class = in_array( $field, $hidden_columns ) ? 'hidden' : '';
-                    echo sprintf( '<th scope="col" class="hf-column hf-column-%s manage-column column-%s %s">', esc_attr( $field ), esc_attr( $field ), $hidden_class );
-                    do_action( 'hf_admin_form_submissions_table_output_column_header', $field, $column );
-                    echo '</th>';
-                } ?>
-            </tr>
-        </thead>
-        <tbody>
+                    echo sprintf( '<td class="column-%s %s">', esc_attr( $field ), $hidden_class );
 
-        <?php foreach( $submissions as $s ) { ?>
-           <tr id="hf-submissions-item-<?php echo $s->id; ?>">
-               <th scope="row" class="check-column">
-                   <input type="checkbox" name="id[]" value="<?php echo esc_attr( $s->id ); ?>"/>
-               </th>
-               <td class="has-row-actions column-primary">
-                    <nobr>
-                   <strong><abbr title="<?php echo date( $datetime_format, strtotime( $s->submitted_at ) ); ?>">
-                       <?php echo sprintf( '<a href="%s">%s</a>', esc_attr( add_query_arg( array( 'tab' => 'submissions', 'submission_id' => $s->id ) ) ), esc_html( $s->submitted_at ) ); ?>
-                   </abbr></strong>
-                  <div class="row-actions">
-                    <?php do_action( 'hf_admin_form_submissions_table_output_row_actions', $s ); ?>
-                  </div>
-               </td>
+                    // because some columns don't have a value, check if it's set here
+                    if( ! empty( $s->data[$field] ) ) {
+                        echo hf_field_value( $s->data[$field], 100 );
+                    }
 
-               <?php foreach( $columns as $field => $column ) {
-                  $hidden_class = in_array( $field, $hidden_columns ) ? 'hidden' : '';
-                  echo sprintf( '<td class="column-%s %s">', esc_attr( $field ), $hidden_class );
-
-                  // because some columns don't have a value, check if it's set here
-                  if( ! empty( $s->data[$field] ) ) {
-                    echo hf_field_value( $s->data[$field], 100 );
-                  }
-
-                  echo '</td>';
-                } ?>
-            </tr>
-        <?php } ?>
-        <?php if ( empty( $submissions ) ) {
-            printf( '<tr><td colspan="2">%s</td></tr>', __( 'Nothing to see here, yet!', 'html-forms' ) );
-        } ?>
-        </tbody>
-    </table>
+                    echo '</td>';
+                    } ?>
+                </tr>
+            <?php } ?>
+            <?php if ( empty( $submissions ) ) {
+                printf( '<tr><td colspan="2">%s</td></tr>', __( 'Nothing to see here, yet!', 'html-forms' ) );
+            } ?>
+            </tbody>
+        </table>
     </div>
 
 	<div class="tablenav">

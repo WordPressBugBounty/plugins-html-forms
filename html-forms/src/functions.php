@@ -105,10 +105,14 @@ function hf_get_form( $form_id_or_slug ) {
  * @param $form_id
  * @return int
  */
-function hf_count_form_submissions( $form_id ) {
+function hf_count_form_submissions( $form_id, $search = '' ) {
 	global $wpdb;
-	$table  = $wpdb->prefix . 'hf_submissions';
-	$result = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} s WHERE s.form_id = %d;", $form_id ) );
+	$table = $wpdb->prefix . 'hf_submissions';
+	if ( $search !== '' ) {
+		$result = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} s WHERE s.form_id = %d AND s.data LIKE %s;", $form_id, '%' . $wpdb->esc_like( $search ) . '%' ) );
+	} else {
+		$result = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$table} s WHERE s.form_id = %d;", $form_id ) );
+	}
 	return (int) $result;
 }
 
@@ -119,14 +123,27 @@ function hf_count_form_submissions( $form_id ) {
  */
 function hf_get_form_submissions( $form_id, array $args = array() ) {
 	$default_args = array(
-		'offset' => 0,
-		'limit'  => 1000,
+		'offset'  => 0,
+		'limit'   => 1000,
+		'orderby' => 'submitted_at',
+		'order'   => 'DESC',
+		'search'  => '',
 	);
-	$args         = array_merge( $default_args, $args );
+	$args = array_merge( $default_args, $args );
+
+	$allowed_orderby = array( 'submitted_at', 'id' );
+	$orderby = in_array( $args['orderby'], $allowed_orderby, true ) ? $args['orderby'] : 'submitted_at';
+	$order   = strtoupper( $args['order'] ) === 'ASC' ? 'ASC' : 'DESC';
 
 	global $wpdb;
-	$table       = $wpdb->prefix . 'hf_submissions';
-	$results     = $wpdb->get_results( $wpdb->prepare( "SELECT s.* FROM {$table} s WHERE s.form_id = %d ORDER BY s.submitted_at DESC LIMIT %d, %d;", $form_id, $args['offset'], $args['limit'] ), OBJECT_K );
+	$table = $wpdb->prefix . 'hf_submissions';
+	if ( $args['search'] !== '' ) {
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderby and $order are whitelisted above
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT s.* FROM {$table} s WHERE s.form_id = %d AND s.data LIKE %s ORDER BY s.{$orderby} {$order} LIMIT %d, %d;", $form_id, '%' . $wpdb->esc_like( $args['search'] ) . '%', $args['offset'], $args['limit'] ), OBJECT_K );
+	} else {
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderby and $order are whitelisted above
+		$results = $wpdb->get_results( $wpdb->prepare( "SELECT s.* FROM {$table} s WHERE s.form_id = %d ORDER BY s.{$orderby} {$order} LIMIT %d, %d;", $form_id, $args['offset'], $args['limit'] ), OBJECT_K );
+	}
 	$submissions = array();
 	foreach ( $results as $key => $object ) {
 		$submission          = Submission::from_object( $object );
