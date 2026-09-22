@@ -6,7 +6,7 @@ Author: HTML Forms
 Author URI: https://htmlformsplugin.com/
 Requires at least: 4.6
 Tested up to: 7.1
-Stable tag: 1.7.0
+Stable tag: 1.7.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires PHP: 5.3
@@ -127,6 +127,9 @@ We currently recommend using [Google reCAPTCHA v3](https://htmlformsplugin.com/k
 
 
 == Changelog ==
+
+#### 1.7.1
+- Improvements to the Submissions list display.
 
 #### 1.7.0
 - Improvements to the Submissions tab including sorting by Timestamp, searching and pagination.

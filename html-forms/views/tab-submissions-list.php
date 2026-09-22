@@ -5,7 +5,7 @@ $date_format = get_option( 'date_format' );
 $datetime_format = sprintf('%s %s', $date_format, get_option( 'time_format' ) );
 
 add_action( 'hf_admin_form_submissions_table_output_column_header', function( $field, $column ) {
-   echo $column;
+   echo sprintf( '<span class="hf-cell-content" title="%s">%s</span>', esc_attr( wp_strip_all_tags( $column ) ), $column );
 }, 10, 2 );
 
 $bulk_actions = apply_filters( 'hf_admin_form_submissions_bulk_actions', array(
@@ -97,7 +97,7 @@ function tablenav_pages( $total_items, $current_page, $total_pages ) {
                     $ts_url     = esc_url( add_query_arg( array( 'orderby' => 'submitted_at', 'order' => $next_order, 'paged' => 1 ) ) );
                     ?>
                     <th scope="col" class="hf-column manage-column column-primary <?php echo $ts_class; ?>">
-                    <a href="<?php echo $ts_url; ?>"><span><?php _e( 'Timestamp', 'html-forms' ); ?></span><span class="sorting-indicator"></span></a>
+                    <a href="<?php echo $ts_url; ?>"><span class="hf-cell-content"><?php _e( 'Timestamp', 'html-forms' ); ?></span><span class="sorting-indicator"></span></a>
                     </th>
                     <?php foreach( $columns as $field => $column ) {
                         $hidden_class = in_array( $field, $hidden_columns ) ? 'hidden' : '';
@@ -115,10 +115,11 @@ function tablenav_pages( $total_items, $current_page, $total_pages ) {
                     <input type="checkbox" name="id[]" value="<?php echo esc_attr( $s->id ); ?>"/>
                 </th>
                 <td class="has-row-actions column-primary">
-                        <nobr>
+                    <span class="hf-cell-content">
                     <strong><abbr title="<?php echo date( $datetime_format, strtotime( $s->submitted_at ) ); ?>">
                         <?php echo sprintf( '<a href="%s">%s</a>', esc_attr( add_query_arg( array( 'tab' => 'submissions', 'submission_id' => $s->id ) ) ), esc_html( date( $datetime_format, strtotime( $s->submitted_at ) ) ) ); ?>
                     </abbr></strong>
+                    </span>
                     <div class="row-actions">
                         <?php do_action( 'hf_admin_form_submissions_table_output_row_actions', $s ); ?>
                     </div>
@@ -130,7 +131,9 @@ function tablenav_pages( $total_items, $current_page, $total_pages ) {
 
                     // because some columns don't have a value, check if it's set here
                     if( ! empty( $s->data[$field] ) ) {
-                        echo hf_field_value( $s->data[$field], 100 );
+                        $value = hf_field_value( $s->data[$field], 100 );
+                        $title = wp_strip_all_tags( str_replace( array( '<br />', '<br>', '<br/>' ), ' ', hf_field_value( $s->data[$field] ) ) );
+                        printf( '<span class="hf-cell-content" title="%s">%s</span>', esc_attr( $title ), $value );
                     }
 
                     echo '</td>';
