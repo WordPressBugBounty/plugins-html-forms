@@ -352,6 +352,12 @@ class Admin {
 			}
 
 			foreach ( $s->data as $field => $value ) {
+				// Rebuild column identifiers
+				$field = preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $field );
+				if ( $field === '' ) {
+					continue;
+				}
+
 				if ( ! isset( $columns[ $field ] ) ) {
 					$columns[ $field ] = esc_html( ucfirst( strtolower( str_replace( '_', ' ', $field ) ) ) );
 				}

@@ -192,8 +192,13 @@ class Forms {
 			}
 
 			foreach ( $vars as $key => $sub_value ) {
-				// strip all whitespace & HTML from keys (!)
-				$key = trim( strip_tags( $key ) );
+				// Restrict keys to a safe identifier charset
+				$key = preg_replace( '/[^A-Za-z0-9_-]/', '', (string) $key );
+
+				// drop keys that are empty after sanitization
+				if ( $key === '' ) {
+					continue;
+				}
 
 				// sanitize sub value
 				$new_value[ $key ] = $this->sanitize( $sub_value );
